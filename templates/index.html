@@ -11,7 +11,19 @@
     <div class="mx-10">
 
         <h1 class="text-center text-xl ">BDA - Mini Project</h1>
+        <h1>Select a Dataset</h1>
         
+        <form method="POST" action="/process">
+            <label for="dataset">Choose a dataset:</label>
+            <select name="dataset" id="dataset">
+                {% for dataset in datasets %}
+                    <option value="{{ dataset }}">{{ dataset }}</option>
+                {% endfor %}
+            </select>
+            <br><br>
+            <input type="submit" value="Submit">
+        </form>
+
         {% if video_info %}
         <div>
             <p>Title : {{ video_info.Title }}</p>
