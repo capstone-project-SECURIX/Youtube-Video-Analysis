@@ -1,0 +1,103 @@
+{% extends 'base.html' %} {% block title %}BDA | Channel View{% endblock %}
+<div>{% block content %}</div>
+
+
+<div class="m-4">
+    <h2 class="text-gray-700 text-4xl font-semibold m-6 text-center">Channel View</h2>
+    
+    <div>
+        <form method="POST" action="/channel" class="flex justify-center my-6 ">
+            <div class="px-40 py-4 border shadow-xl w-3/6 rounded">
+                <div>
+                    <label for="dataset" class="text-center text-gray-600">Choose a dataset:</label>
+                    <select name="dataset" id="dataset" class="bg-white text-gray-600 border border-black rounded">
+                        {% for dataset in datasets %}
+                        <option value="{{ dataset }}" class="bg-white">{{ dataset }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="my-6">
+                    <label for="channel" class="text-center text-gray-600">Enter a channel name:</label>
+                    <input type="text" name="channel" id="channel" class="bg-white text-gray-600 border border-black rounded">
+                </div>
+                <p class="text-gray-500 my-2">example channel names ...<br> (CA:EminemVEVO) (DE:NFL) (IN:SeeKen) <br>(RU:Druzhko Show) (US:CaseyNeistat)</p>
+                <div class="flex justify-center my-4">
+                    <input type="submit" value="Submit" class="text-gray-600 font-bold px-4 py-2 border shadow-lg rounded hover:bg-blue-100 hover:border hover:border-black">
+                </div>
+            </div>
+        </form>
+    </div>
+
+    {% if results %}
+
+    <div>
+        <div class="text-4xl text-red-700 font-bold text-center">Channel : {{ channel_title }}   ( Videos : {{ results.channel_Total_Videos }} )</div>
+
+        <div>
+            <div class="text-2xl font-bold px-4 py-2 border shadow-xl my-10 text-center"><b>{{ channel_title }}</b> : Top 10 Liked Videos</div>
+            <div>
+                <!-- <div>{{ results.channel_Top_10_Liked_Videos }}</div> -->
+                <div >
+                    
+                    <div class="grid grid-cols-6 gap-4">
+                        {% for items in results.channel_Top_10_Liked_Videos %}
+                            <div class="flex justify-center"><img src="{{ items.thumbnail_link }}" alt="thumbnail" class="rounded p-2 border border-black"></div>
+                            <div class="text-center col-span-2 "><i class="fa-brands fa-youtube mx-2"></i>{{ items.title }}</div>
+                            <div class="text-center"><i class="fa-solid fa-thumbs-up mx-2"></i>{{ items.likes }}</div>
+                            <div class="text-center"><i class="fa-solid fa-eye mx-2"></i>{{ items.views }}</div>
+                            <a href="https://www.youtube.com/watch?v={{ items.video_id }}" target="_blank">
+                                <div class="text-center"><i class="fa-solid fa-arrow-up-right-from-square"></i></div>
+                            </a>
+                        {% endfor %}
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+
+
+
+        <div>
+            <div class="text-2xl font-bold px-4 py-2 border shadow-xl my-10 text-center"><b>{{ channel_title }} </b> : Top Viewed Video</div>
+            <div>
+                <!-- <div>{{ results.channel_Top_Viewed_Video }}</div> -->
+                
+                <div class="grid grid-cols-6 gap-4">
+                        <div class="flex justify-center"><img src="{{ results.channel_Top_Viewed_Video.thumbnail_link }}" alt="thumbnail" class="rounded p-2 border border-black"></div>
+                        <div class="text-center col-span-2 "><i class="fa-brands fa-youtube mx-2"></i>{{ results.channel_Top_Viewed_Video.title }}</div>
+                        <div class="text-center"><i class="fa-solid fa-eye mx-2"></i>{{ results.channel_Top_Viewed_Video.views }}</div>
+                        <a href="https://www.youtube.com/watch?v={{ results.channel_Top_Viewed_Video.video_id }}" target="_blank">
+                            <div class="text-center"><i class="fa-solid fa-arrow-up-right-from-square"></i></div>
+                        </a>
+                </div>
+            </div>
+        </div>
+        <!-- {'video_id': 'wfWIs2gFTAM', 'title': 'Eminem - River ft. Ed Sheeran', 'views': 32730338, 'thumbnail_link': 'https://i.ytimg.com/vi/wfWIs2gFTAM/default.jpg'} -->
+
+
+        <div>
+            <div class="text-2xl font-bold px-4 py-2 border shadow-xl my-10 text-center"><b>{{ channel_title }} </b> : Top Impression Video</div>
+            <div>
+                <!-- <div>{{ results.channel_Top_Impression_Video }}</div> -->
+                
+                <div class="grid grid-cols-6 gap-4">
+                    <div class="flex justify-center"><img src="{{ results.channel_Top_Impression_Video.thumbnail_link }}" alt="thumbnail" class="rounded p-2 border border-black"></div>
+                    <div class="text-center col-span-2 "><i class="fa-brands fa-youtube mx-2"></i>{{ results.channel_Top_Impression_Video.title }}</div>
+                    <div class="text-center"><i class="fa-solid fa-thumbs-up mx-2"></i>Impression : {{ results.channel_Top_Impression_Video.impression }} </div>
+                    <a href="https://www.youtube.com/watch?v={{ results.channel_Top_Impression_Video.video_id }}" target="_blank">
+                        <div class="text-center"><i class="fa-solid fa-arrow-up-right-from-square"></i></div>
+                    </a>
+            </div>
+            </div>
+        </div>
+
+
+    </div>
+    {% endif %}
+
+
+
+</div>
+
+{% endblock %}

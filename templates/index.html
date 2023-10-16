@@ -1,41 +1,102 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BDA - Mini Project</title>
-    <script src="{{ url_for('static', filename='tailwindcss.js') }}"></script>
-</head>
+{% extends 'base.html' %} {% block title %}BDA | Dataset View{% endblock %}
+<div>{% block content %}</div>
 
-<body class="my-10">
-    <div class="mx-10">
 
-        <h1 class="text-center text-xl ">BDA - Mini Project</h1>
-        <h1>Select a Dataset</h1>
-        
-        <form method="POST" action="/dataset">
-            <label for="dataset">Choose a dataset:</label>
-            <select name="dataset" id="dataset">
-                {% for dataset in datasets %}
-                    <option value="{{ dataset }}">{{ dataset }}</option>
-                {% endfor %}
-            </select>
-            <br><br>
-            <input type="submit" value="Submit">
+<div class="m-4">
+    <h2 class="text-gray-700 text-4xl font-semibold m-6 text-center">Dataset View</h2>
+
+    <div>
+        <form method="POST" action="/dataset" class="flex justify-center my-6 ">
+                
+            <div class="px-10 py-4 border shadow-xl w-2/6 rounded">
+                <div>
+                    <label for="dataset" class="text-center text-gray-600">Choose a dataset:</label>
+                    <select name="dataset" id="dataset" class="bg-white text-gray-600 border border-black rounded ">
+                        {% for dataset in datasets %}
+                        <option value="{{ dataset }}" class="bg-white">{{ dataset }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="flex justify-center my-4">
+                    <input type="submit" value="Submit" class="text-gray-600 font-bold px-4 py-2 border shadow-lg rounded hover:bg-blue-100 hover:border hover:border-black">
+                </div>
+            </div>
+
         </form>
 
         {% if results %}
         <div>
-            <p>Top_5_Categories_with_Most_Videos : {{ results.Top_5_Categories_with_Most_Videos }}</p>
-            <p>Top_10_Liked_Videos : {{ results.Top_10_Liked_Videos }}</p>
-            <p>Top_10_Most_Viewed_Videos : {{ results.Top_10_Most_Viewed_Videos }}</p>
-            <p>correlation_between : {{ results.correlation_between }}</p>
+            <div class="my-10">
+                <div class="text-xl text-gray-600 p-2 border shadow-xl rounded-xl font-bold">Top 5 Categories with Most Videos</div>
+                
+                <div class="flex justify-center my-8">
+                    <img src="{{ url_for('static', filename='tempimgs/top_categories_bar_chart.png') }}" alt="top_categories_bar_chart">
+                </div>
+
+                <div class="grid grid-cols-2 gap-4 my-4">
+                    <div class="text-center font-bold">Category</div>
+                    <div class="text-center font-bold">Counts</div>
+                    {% for items in results.Top_5_Categories_with_Most_Videos %}
+                            <div class="text-center">
+                                {{ items.cat }} 
+                            </div>
+                            
+                            <div class="text-center">
+                                {{ items.count }}
+                            </div>
+                    {% endfor %}
+                </div>
+
+            </div>
+
+            <div class="my-10">
+                <div class="text-xl text-gray-600 p-2 border shadow-xl rounded-xl font-bold">Top 10 Liked Videos</div>
+                <div class="grid grid-cols-2 gap-4 my-4">
+                    <div class="text-center font-bold">Title</div>
+                    <div class="text-center font-bold">Likes</div>
+                    {% for items in results.Top_10_Liked_Videos %}
+                            <div class="text-center">
+                                {{ items.title }} 
+                            </div>
+                            
+                            <div class="text-center">
+                                {{ items.likes }}
+                            </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="my-10">
+                <div class="text-xl text-gray-600 p-2 border shadow-xl rounded-xl font-bold">Top 10 Most Viewed Videos</div>
+
+                <div class="grid grid-cols-2 gap-4 my-4">
+                    <div class="text-center font-bold">Title</div>
+                    <div class="text-center font-bold">Views</div>
+                    {% for items in results.Top_10_Most_Viewed_Videos %}
+                            <div class="text-center">
+                                {{ items.title }} 
+                            </div>
+                            
+                            <div class="text-center">
+                                {{ items.views }}
+                            </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="my-10">
+                <div class="text-xl text-gray-600 p-2 border shadow-xl rounded-xl font-bold">Correlation Between</div>
+
+                <div class="flex justify-center my-8">
+                    <img src="{{ url_for('static', filename='tempimgs/correlation_heatmap.png') }}" alt="top_categories_bar_chart">
+                </div>
+
+                <!-- <div>{{ results.correlation_between }}</div> -->
+            </div>
         </div>
         {% endif %}
-        <div>   
-
-            
-        </div>
     </div>
-</body>
-</html>
+
+</div>
+
+{% endblock %}
