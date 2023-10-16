@@ -2,7 +2,7 @@
 
 # app.py (main Flask application)
 
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, url_for
 import pandas as pd
 
 import numpy as np
@@ -35,14 +35,18 @@ from utils import Top_5_Categories_with_Most_Videos, Top_10_Liked_Videos, Top_10
 
 app = Flask(__name__)
 
+
 # Load your dataset using Pandas
-df1 = pd.read_csv(r"static/datasets/USvideos.csv")
-df2 = pd.read_csv(r"static/datasets/USvideos.csv")
-df3 = pd.read_csv(r"static/datasets/USvideos.csv")
-df4 = pd.read_csv(r"static/datasets/USvideos.csv")
+
+file_paths = [
+    r"static/datasets/USvideos.csv",
+    r"static/datasets/RUvideos.csv",
+    r"static/datasets/CAvideos.csv",
+    r"static/datasets/DEvideos.csv"
+]
 
 # Dummy dataset options
-datasets = ['set1', 'set2', 'set3']
+datasets = ['USvideos', 'RUvideos', 'CAvideos', 'DEvideos']
 
 # Define routes and views
 @app.route('/')
@@ -55,22 +59,37 @@ def index():
 #     results = "123"
 #     return render_template('search.html', results=results)
 
-
-
 # print("Top_5_Categories_with_Most_Videos: ",Top_5_Categories_with_Most_Videos(df))
-@app.route('/Top_5_Categories_with_Most_Videos', methods=['GET'])
+@app.route('/dataset', methods=['GET', 'POST'])
 def search():
-    selected_dataset = request.form.get('dataset')
 
-    if selected_dataset == ''
-    results =  { 
-        'Top_5_Categories_with_Most_Videos' :Top_5_Categories_with_Most_Videos(df1), 
-        'Top_10_Liked_Videos' :Top_10_Liked_Videos(df1), 
-        'Top_10_Most_Viewed_Videos' :Top_10_Most_Viewed_Videos(df1), 
-        'correlation_between' :correlation_between(df1), 
-                } 
+    if request.method == 'POST':
+
+        selected_dataset = request.form.get('dataset')
+
+        if selected_dataset == 'USvideos':
+            df = file_paths[0]
+        elif selected_dataset == 'RUvideos':
+            df = file_paths[1]
+        elif selected_dataset == 'CAvideos':
+            df = file_paths[2]
+        elif selected_dataset == 'DEvideos':
+            df = file_paths[3]
+
+        results =  { 
+            'Top_5_Categories_with_Most_Videos' :Top_5_Categories_with_Most_Videos(df), 
+            'Top_10_Liked_Videos' :Top_10_Liked_Videos(df), 
+            'Top_10_Most_Viewed_Videos' :Top_10_Most_Viewed_Videos(df), 
+            'correlation_between' :correlation_between(df), 
+                    } 
+        
+        return render_template('index.html', results=results)
     
-    return render_template('displayData.html', results=results)
+
+    elif request.method == 'GET':
+        # print("POST request")
+        return redirect(url_for('index'))
+
 
 
 

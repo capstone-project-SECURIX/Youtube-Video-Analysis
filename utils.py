@@ -13,7 +13,16 @@ import json
 # import wordcloud
 # import json
 
-df = pd.read_csv(r"static/datasets/USvideos.csv")
+file_paths = [
+    r"static/datasets/USvideos.csv",
+    r"static/datasets/RUvideos.csv",
+    r"static/datasets/CAvideos.csv",
+    r"static/datasets/DEvideos.csv"
+]
+
+csvfilepath = file_paths[3]
+# print("csvfilepath : ",csvfilepath)
+df = pd.read_csv(csvfilepath,  encoding='latin1')
 
 category_mapping = {
     1: 'Film & Animation',
@@ -120,10 +129,54 @@ def correlation_between(df):
 
 
 # print("Top_5_Categories_with_Most_Videos: ",Top_5_Categories_with_Most_Videos(df))
+# print("\n\n")
 # print("Top_10_Liked_Videos: ",Top_10_Liked_Videos(df))
+# print("\n\n")
+
 # print("Top_10_Most_Viewed_Videos: ",Top_10_Most_Viewed_Videos(df))
+# print("\n\n")
+
 # print("correlation_between: ",correlation_between(df))
 
+
+'''
+
+Top_5_Categories_with_Most_Videos:  [{'cat': 'Entertainment', 'count': 15292}, {'cat': 'People & Blogs', 'count': 5988}, {'cat': 'News & Politics', 'count': 2935}, {'cat': 'Sports', 'count': 2752}, {'cat': 'Comedy', 'count': 2534}]
+
+{'title': "BTS (ë°©í\x83\x84ì\x86\x8cë\x85\x84ë\x8b¨) 'FAKE LOVE' Official MV", 'likes': 4924056}
+{'title': "BTS (ë°©í\x83\x84ì\x86\x8cë\x85\x84ë\x8b¨) 'FAKE LOVE' Official MV", 'likes': 4750254}
+{'title': "BTS (ë°©í\x83\x84ì\x86\x8cë\x85\x84ë\x8b¨) 'FAKE LOVE' Official MV", 'likes': 4470888}
+{'title': "BTS (ë°©í\x83\x84ì\x86\x8cë\x85\x84ë\x8b¨) 'FAKE LOVE' Official MV", 'likes': 3880074}
+{'title': 'YouTube Rewind: The Shape of 2017 | #YouTubeRewind', 'likes': 2811217}
+{'title': 'YouTube Rewind: The Shape of 2017 | #YouTubeRewind', 'likes': 2656675}
+{'title': "Marvel Studios' Avengers: Infinity War Official Trailer", 'likes': 2513103}
+{'title': 'Childish Gambino - This Is America (Official Video)', 'likes': 2478908}
+{'title': "BTS (ë°©í\x83\x84ì\x86\x8cë\x85\x84ë\x8b¨) 'MIC Drop (Steve Aoki Remix)' Official MV", 'likes': 2454901}
+{'title': "Marvel Studios' Avengers: Infinity War Official Trailer", 'likes': 2444956}
+
+
+Top_10_Liked_Videos:  [{'title': "BTS (ë°©í\x83\x84ì\x86\x8cë\x85\x84ë\x8b¨) 'FAKE LOVE' Official MV", 'likes': 4924056}, {'title': "BTS (ë°©í\x83\x84ì\x86\x8cë\x85\x84ë\x8b¨) 'FAKE LOVE' Official MV", 'likes': 4750254}, {'title': "BTS (ë°©í\x83\x84ì\x86\x8cë\x85\x84ë\x8b¨) 'FAKE LOVE' Official MV", 'likes': 4470888}, {'title': "BTS (ë°©í\x83\x84ì\x86\x8cë\x85\x84ë\x8b¨) 'FAKE LOVE' Official MV", 'likes': 3880074}, {'title': 'YouTube Rewind: The Shape of 2017 | #YouTubeRewind', 'likes': 2811217}, {'title': 'YouTube Rewind: The Shape of 2017 | #YouTubeRewind', 'likes': 2656675}, {'title': "Marvel Studios' Avengers: Infinity War Official Trailer", 'likes': 2513103}, {'title': 'Childish Gambino - This Is America (Official Video)', 'likes': 2478908}, {'title': "BTS (ë°©í\x83\x84ì\x86\x8cë\x85\x84ë\x8b¨) 'MIC Drop (Steve Aoki Remix)' Official MV", 'likes': 2454901}, {'title': "Marvel Studios' Avengers: Infinity War Official Trailer", 'likes': 2444956}]     
+
+
+
+{'title': 'YouTube Rewind: The Shape of 2017 | #YouTubeRewind', 'views': 113876217}
+{'title': 'YouTube Rewind: The Shape of 2017 | #YouTubeRewind', 'views': 100911567}
+{'title': "Marvel Studios' Avengers: Infinity War Official Trailer", 'views': 80360459}
+{'title': 'YouTube Rewind: The Shape of 2017 | #YouTubeRewind', 'views': 75969469}
+{'title': "Marvel Studios' Avengers: Infinity War Official Trailer", 'views': 74789251}
+{'title': "BTS (ë°©í\x83\x84ì\x86\x8cë\x85\x84ë\x8b¨) 'FAKE LOVE' Official MV", 'views': 73463137}
+{'title': 'Childish Gambino - This Is America (Official Video)', 'views': 73432600}
+{'title': "Marvel Studios' Avengers: Infinity War Official Trailer", 'views': 66637636}
+{'title': "BTS (ë°©í\x83\x84ì\x86\x8cë\x85\x84ë\x8b¨) 'FAKE LOVE' Official MV", 'views': 65396157}
+{'title': "BTS (ë°©í\x83\x84ì\x86\x8cë\x85\x84ë\x8b¨) 'FAKE LOVE' Official MV", 'views': 62796390}
+
+Top_10_Most_Viewed_Videos:  [{'title': 'YouTube Rewind: The Shape of 2017 | #YouTubeRewind', 'views': 113876217}, {'title': 'YouTube Rewind: The Shape of 2017 | #YouTubeRewind', 'views': 100911567}, {'title': "Marvel Studios' Avengers: Infinity War Official Trailer", 'views': 80360459}, {'title': 'YouTube Rewind: The Shape of 2017 | #YouTubeRewind', 'views': 75969469}, {'title': "Marvel Studios' Avengers: Infinity War Official Trailer", 'views': 74789251}, {'title': "BTS (ë°©í\x83\x84ì\x86\x8cë\x85\x84ë\x8b¨) 'FAKE LOVE' Official MV", 'views': 73463137}, {'title': 'Childish Gambino - This Is America (Official Video)', 'views': 73432600}, {'title': "Marvel Studios' Avengers: Infinity War Official Trailer", 'views': 66637636}, {'title': "BTS (ë°©í\x83\x84ì\x86\x8cë\x85\x84ë\x8b¨) 'FAKE LOVE' Official MV", 'views': 65396157}, {'title': "BTS (ë°©í\x83\x84ì\x86\x8cë\x85\x84ë\x8b¨) 'FAKE LOVE' Official MV", 'views': 62796390}]
+
+
+
+correlation_between:  {'columns': ['views', 'likes', 'dislikes', 'comment_count'], 'index': ['views', 'likes', 'dislikes', 'comment_count'], 'data': [[1.0, 0.8241886774, 0.5560000663, 0.705515967], [0.8241886774, 1.0, 0.4602076798, 0.8524923709], [0.5560000663, 0.4602076798, 1.0, 0.6421435046], [0.705515967, 0.8524923709, 0.6421435046, 1.0]]}
+
+'''
 
 '''
 jsondata = [
@@ -132,3 +185,4 @@ jsondata = [
 
     ]
 '''
+

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BDA - Mini Project</title>
+    <script src="{{ url_for('static', filename='tailwindcss.js') }}"></script>
+</head>
+
+<body class="my-10">
+    <div class="mx-10">
+
+        <h1 class="text-center text-xl ">BDA - Mini Project</h1>
+        <h1>Select a Dataset</h1>
+        
+        {% if video_info %}
+        <div>
+            <p>Title : {{ video_info.Title }}</p>
+            <p>Views : {{ video_info.Views }}</p>
+            <p>Likes : {{ video_info.Likes }}</p>
+        </div>
+        {% endif %}
+        <div>   
+            
+        </div>
+    </div>
+</body>
+</html>

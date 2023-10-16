@@ -13,7 +13,7 @@
         <h1 class="text-center text-xl ">BDA - Mini Project</h1>
         <h1>Select a Dataset</h1>
         
-        <form method="POST" action="/process">
+        <form method="POST" action="/dataset">
             <label for="dataset">Choose a dataset:</label>
             <select name="dataset" id="dataset">
                 {% for dataset in datasets %}
@@ -24,14 +24,16 @@
             <input type="submit" value="Submit">
         </form>
 
-        {% if video_info %}
+        {% if results %}
         <div>
-            <p>Title : {{ video_info.Title }}</p>
-            <p>Views : {{ video_info.Views }}</p>
-            <p>Likes : {{ video_info.Likes }}</p>
+            <p>Top_5_Categories_with_Most_Videos : {{ results.Top_5_Categories_with_Most_Videos }}</p>
+            <p>Top_10_Liked_Videos : {{ results.Top_10_Liked_Videos }}</p>
+            <p>Top_10_Most_Viewed_Videos : {{ results.Top_10_Most_Viewed_Videos }}</p>
+            <p>correlation_between : {{ results.correlation_between }}</p>
         </div>
         {% endif %}
         <div>   
+
             
         </div>
     </div>
