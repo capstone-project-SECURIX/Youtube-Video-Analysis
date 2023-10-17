@@ -19,10 +19,6 @@ ratings_disabled,
 video_error_or_removed,
 description
 
-thumbnail_link, video_id
-
-
-
 video_id,trending_date,title,channel_title,category_id,publish_time,tags,views,likes,dislikes,comment_count,thumbnail_link,comments_disabled,ratings_disabled,video_error_or_removed,description
 
 
@@ -34,22 +30,13 @@ person vise analysis : channel_title
 - top viewed video 
 - top impression ( for impression use likes and dislikes and views)
 
+datasets = [
+    r"static/datasets/USvideos.csv",
+    r"static/datasets/RUvideos.csv",
+    r"static/datasets/CAvideos.csv",
+    r"static/datasets/DEvideos.csv",
+    r"static/datasets/INvideos.csv"
+]
 
-give python function for it 
 
-example:
-def Top_10_Liked_Videos(df):
-    top_rated_videos = df.nlargest(10, 'likes')
-
-    jsondata = []
-
-    for index, row in top_rated_videos.iterrows():
-        video_info = {'title': row['title'], 'likes': row['likes']}
-        jsondata.append(video_info)
-
-    # Print the resulting JSON data
-    for item in jsondata:
-        print(item)
-
-    # {'title': "BTS (방탄소년단) 'FAKE LOVE' Official MV", 'likes': 5053329}
-    return jsondata
+help me to develop presentation 
