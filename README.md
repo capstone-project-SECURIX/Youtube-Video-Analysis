@@ -1,5 +1,3 @@
- Here is a professionally formatted README.md file for a YouTube video analysis project based on the provided information:
-
 # YouTube Video Analysis
 
 This project analyzes YouTube video datasets to gain insights into categories, video popularity, correlations, and channel-specific metrics. It includes a Flask web application for interacting with the data.
@@ -48,7 +46,7 @@ pip install flask pandas numpy matplotlib seaborn wordcloud
 ### Installation
 
 ```bash
-git clone https://github.com/<username>/youtube-video-analysis
+git clone https://github.com/capstone-project-SECURIX/Youtube-Video-Analysis.git
 cd youtube-video-analysis
 pip install -r requirements.txt
 ```
@@ -112,8 +110,8 @@ The `youtube-dataset/` folder contains CSV files for different countries:
 
 ## Acknowledgements
 
-- [Anthropic](https://www.anthropic.com/) for Claude AI Assistant
 - [Kaggle Dataset](https://www.kaggle.com/datasets/datasnaek/youtube-new)
+- [Kaggle Notebook](https://www.kaggle.com/code/mrappplg/youtube-trending-videos-analysis)
 
 ## License
 

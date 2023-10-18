@@ -99,9 +99,7 @@ def channel():
         # print("POST request")
         return render_template('channelData.html', datasets=datasets)
 
-'''
-Top_5_Categories_with_Most_Videos:  [{'cat': 'Entertainment', 'count': 13451}, {'cat': 'News & Politics', 'count': 4159}, {'cat': 'People & Blogs', 'count': 4105}, {'cat': 'Comedy', 'count': 3773}, {'cat': 'Music', 'count': 3731}]
-'''
+
 
 @app.route('/rlang', methods=['GET'])
 def rlang():
