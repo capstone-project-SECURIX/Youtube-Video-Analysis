@@ -3,7 +3,9 @@ import numpy as np
 import json
 import matplotlib.pyplot as plt
 import seaborn as sns
-
+from wordcloud import WordCloud
+from collections import Counter
+import re
 
 
 # import matplotlib as mpl
@@ -20,10 +22,11 @@ file_paths = [
     r"static/datasets/USvideos.csv",
     r"static/datasets/RUvideos.csv",
     r"static/datasets/CAvideos.csv",
-    r"static/datasets/DEvideos.csv"
+    r"static/datasets/DEvideos.csv",
+    r"static/datasets/INvideos.csv"
 ]
 
-csvfilepath = file_paths[2]
+csvfilepath = file_paths[4]
 # print("csvfilepath : ",csvfilepath)
 df = pd.read_csv(csvfilepath,  encoding='latin1')
 
@@ -223,6 +226,257 @@ def channel_Total_Videos(df, channel_title):
     
     return total_videos
 
+def channel_video_all_details(df, channel_title):
+    # Filter the DataFrame for videos by the specified channel_title
+    channel_df = df[df['channel_title'] == channel_title]
+
+    # Iterate through the filtered DataFrame and print video details
+    for index, row in channel_df.iterrows():
+        print("VideoID:", row['video_id'])
+        print("Title:", row['title'])
+        print("Views:", row['views'])
+        print("Likes:", row['likes'])
+        print("Dislikes:", row['dislikes'])
+        print("CommentCount:", row['comment_count'])
+        print("ThumbnailLink:", row['thumbnail_link'])
+        print("CommentsDisabled:", row['comments_disabled'])
+        print("RatingsDisabled:", row['ratings_disabled'])
+        print("VideoErrororRemoved:", row['video_error_or_removed'])
+        print("Description:", row['description'])
+        print("\n")
+
+def channel_summary(df, channel_title):
+    # Filter the DataFrame for videos by the specified channel_title
+    channel_df = df[df['channel_title'] == channel_title]
+
+    # Calculate Total Views
+    total_views = channel_df['views'].sum()
+
+    # Calculate Average Views
+    average_views = channel_df['views'].mean()
+
+    # Calculate Total Likes
+    total_likes = channel_df['likes'].sum()
+
+    # Calculate Average Likes
+    average_likes = channel_df['likes'].mean()
+
+    # Calculate Total Dislikes
+    total_dislikes = channel_df['dislikes'].sum()
+
+    return {
+        'TotalViews': total_views,
+        'AverageViews': average_views,
+        'TotalLikes': total_likes,
+        'AverageLikes': average_likes,
+        'TotalDislikes': total_dislikes
+    }
+
+def channel_summary_extended(df, channel_title):
+    # Filter the DataFrame for videos by the specified channel_title
+    channel_df = df[df['channel_title'] == channel_title]
+
+    # Calculate Average Dislikes
+    average_dislikes = channel_df['dislikes'].mean()
+
+    # Calculate Total Comments
+    total_comments = channel_df['comment_count'].sum()
+
+    # Calculate Average Comments
+    average_comments = channel_df['comment_count'].mean()
+
+    # Find Most Liked Video
+    most_liked_video = channel_df[channel_df['likes'] == channel_df['likes'].max()].iloc[0]
+
+    # Find Most Disliked Video
+    most_disliked_video = channel_df[channel_df['dislikes'] == channel_df['dislikes'].max()].iloc[0]
+
+    return {
+        'AverageDislikes': average_dislikes,
+        'TotalComments': total_comments,
+        'AverageComments': average_comments,
+        'MostLikedVideo': {
+            'VideoID': most_liked_video['video_id'],
+            'Title': most_liked_video['title'],
+            'thumbnail_link': most_liked_video['thumbnail_link'],
+            'Likes': most_liked_video['likes'],
+        },
+        'MostDislikedVideo': {
+            'Title': most_disliked_video['title'],
+            'Dislikes': most_disliked_video['dislikes'],
+            'VideoID': most_disliked_video['video_id'],
+            'thumbnail_link': most_disliked_video['thumbnail_link'],
+
+        }
+    }
+
+def channel_summary_extended_v2(df, channel_title):
+    # Filter the DataFrame for videos by the specified channel_title
+    channel_df = df[df['channel_title'] == channel_title]
+
+    # Video with Most Comments
+    most_commented_video = channel_df[channel_df['comment_count'] == channel_df['comment_count'].max()].iloc[0]
+
+    # Channel Engagement
+    total_likes = channel_df['likes'].sum()
+    total_dislikes = channel_df['dislikes'].sum()
+    total_comments = channel_df['comment_count'].sum()
+    total_views = channel_df['views'].sum()
+    channel_engagement = {
+        'TotalLikes': total_likes,
+        'TotalDislikes': total_dislikes,
+        'TotalComments': total_comments,
+        'TotalViews': total_views,
+        'EngagementRate': {
+            'LikesperView': total_likes / total_views,
+            'DislikesperView': total_dislikes / total_views,
+            'CommentsperView': total_comments / total_views
+        }
+    }
+
+    # Popular Thumbnail Colors (placeholder code)
+    thumbnail_colors = ['Red', 'Blue', 'Green']  # Analyze your data for this metric
+
+    # Time Analysis (assuming 'publish_time' is a timestamp column)
+    # channel_df['publish_time'] = pd.to_datetime(channel_df['publish_time'])
+    # channel_df['publish_hour'] = channel_df['publish_time'].dt.hour
+    # publish_time_counts = channel_df['publish_hour'].value_counts()
+
+    # Time Analysis (assuming 'publish_time' is a timestamp column)
+    channel_df['publish_time'] = pd.to_datetime(channel_df['publish_time'])
+    channel_df['publish_hour'] = channel_df['publish_time'].dt.hour
+    TimeAnalysis  = channel_df['publish_hour'].value_counts().sort_index().tolist()
+
+    # Ensure publish_time_counts has data for all 24 hours
+    publish_time_counts = np.zeros(24)
+
+
+    # Update publish_time_counts based on the available data
+    for hour, count in enumerate(TimeAnalysis ):
+        publish_time_counts[hour] = count
+
+    # Create a line chart
+    plt.plot(range(24), publish_time_counts, marker='o')
+    plt.title('Time Analysis')
+    plt.xlabel('Hour of the Day')
+    plt.ylabel('Count')
+    plt.grid(True)
+
+    # Save the chart as an image
+    plt.savefig('static/tempimgs/time_analysis.png')
+
+    # Day of the Week Analysis
+    # channel_df['publish_day'] = channel_df['publish_time'].dt.day_name()
+    # publish_day_counts = channel_df['publish_day'].value_counts()
+
+    # Day of the Week Analysis
+    channel_df['publish_day'] = channel_df['publish_time'].dt.day_name()
+    publish_day_counts = channel_df['publish_day'].value_counts().to_dict()
+
+    # Extract days and counts from publish_day_counts
+    days = list(publish_day_counts.keys())
+    counts = [publish_day_counts[day] for day in days]
+
+    # Create a bar chart
+    plt.bar(days, counts)
+    plt.title('Day of the Week Analysis')
+    plt.xlabel('Day')
+    plt.ylabel('Count')
+
+    # Save the chart as an image
+    plt.savefig('static/tempimgs/day_of_week_analysis.png')
+
+
+    return {
+        'VideowithMostComments': {
+            'Title': most_commented_video['title'],
+            'Comments': most_commented_video['comment_count'],
+            'VideoID': most_commented_video['video_id'],
+            'thumbnail_link': most_commented_video['thumbnail_link'],
+
+        },
+        'ChannelEngagement': channel_engagement,
+        'PopularThumbnailColors': thumbnail_colors,
+        'TimeAnalysis': TimeAnalysis ,
+        'DayoftheWeekAnalysis': publish_day_counts
+    }
+
+def clean_description(description_text):
+    # Remove URLs
+    description_text = re.sub(r'http\S+', '', description_text)
+    description_text = re.sub(r'www\S+', '', description_text)
+
+    # Remove newline characters
+    description_text = description_text.replace('\n', ' ')
+    description_text = description_text.replace('\\n', ' ')
+    description_text = description_text.replace('|', ' ')
+    description_text = description_text.replace('#', ' ')
+    description_text = description_text.replace('-', ' ')
+    description_text = description_text.replace('.', ' ')
+    description_text = description_text.replace(',', ' ')
+    description_text = description_text.replace(';', ' ')
+    description_text = description_text.replace("'", ' ')
+    description_text = description_text.replace('(', ' ')
+    description_text = description_text.replace(')', ' ')
+    description_text = description_text.replace('Subscribe:', ' ')
+    description_text = description_text.replace('Like:', ' ')
+    description_text = description_text.replace('Follow:', ' ')
+    description_text = description_text.replace('etc', ' ')
+    description_text = description_text.replace('\t', ' ')
+
+    return description_text
+
+def channel_summary_analysis(df, channel_title):
+    # Filter the DataFrame for videos by the specified channel_title
+    channel_df = df[df['channel_title'] == channel_title]
+
+    # Top Keywords in Titles
+    all_keywords = ' '.join(channel_df['title'])
+    wordcloud = WordCloud(width=800, height=400, background_color='white').generate(all_keywords)
+    plt.figure(figsize=(10, 5))
+    plt.imshow(wordcloud, interpolation='bilinear')
+    plt.axis("off")
+    plt.title("Top Keywords in Titles")
+    plt.savefig('static/tempimgs/top_keywords_wordcloud.png')  # Save the word cloud image
+    plt.close()  # Close the plot
+
+
+
+    # Channel Interaction: Analyze the relationship between likes, dislikes, and comments
+    channel_df['interaction_rate'] = (channel_df['likes'] + channel_df['dislikes']) / channel_df['comment_count']
+    
+    # # Video Length Analysis: Study the relationship between video length and views
+    # channel_df['video_duration'] = pd.to_numeric(channel_df['video_duration'], errors='coerce')
+    # video_length_vs_views = channel_df.groupby('video_duration')['views'].mean()
+    
+    # Top Viewed Categories: Identify the most viewed video categories
+    top_categories = channel_df['category_id'].value_counts().nlargest(5)
+    top_categories = top_categories.index.tolist()
+
+    # Word Cloud Analysis: Create word clouds from video descriptions
+    all_descriptions = ' '.join(channel_df['description'])
+    all_descriptionsword = clean_description(all_descriptions)
+    wordcloud = WordCloud(width=800, height=400, background_color='white').generate(all_descriptionsword)
+    plt.figure(figsize=(10, 5))
+    plt.imshow(wordcloud, interpolation='bilinear')
+    plt.axis("off")
+    plt.title("Word Cloud Analysis of Video Descriptions")
+    plt.savefig('static/tempimgs/description_wordcloud.png')  # Save the word cloud image
+    plt.close()  # Close the plot
+
+
+    return {
+        "TopKeywordsinTitles": all_keywords,
+        "ChannelInteraction": channel_df['interaction_rate'].mean(),
+        # "Video Length vs Views": video_length_vs_views.to_dict(),
+        "TopViewedCategories": top_categories,
+        "WordCloudAnalysis": all_descriptions
+    }
+
+
+
+# Example usage:
+# Replace 'df' with your actual DataFrame, and 'channel_title' with the channel name
 
 
 # print("Top_5_Categories_with_Most_Videos: ",Top_5_Categories_with_Most_Videos(df))
@@ -238,11 +492,19 @@ def channel_Total_Videos(df, channel_title):
 # test - 2
 
 # channel_title = "EminemVEVO" 
-channel_title = "Saregama TVShows" 
+# channel_title = "Saregama TVShows" 
+channel_title = "Top Telugu TV" # IN-dataset 
 
 # print(channel_Top_10_Liked_Videos(df, channel_title))
 # print(channel_Top_Viewed_Video(df, channel_title))
 # print(channel_Top_Impression_Video(df, channel_title))
+# print(channel_video_all_details(df, channel_title))
+
+# print(channel_summary(df, channel_title))
+# print(channel_summary_extended(df, channel_title))
+# print(channel_summary_extended_v2(df, channel_title))
+# print(channel_summary_analysis(df, channel_title))
+
 '''
 
 Top_5_Categories_with_Most_Videos:  [{'cat': 'Entertainment', 'count': 15292}, {'cat': 'People & Blogs', 'count': 5988}, {'cat': 'News & Politics', 'count': 2935}, {'cat': 'Sports', 'count': 2752}, {'cat': 'Comedy', 'count': 2534}]
@@ -312,3 +574,25 @@ jsondata = [
     ]
 '''
 
+'''
+video_id,trending_date,title,channel_title,category_id,publish_time,tags,views,likes,dislikes,comment_count,thumbnail_link,comments_disabled,ratings_disabled,video_error_or_removed,description
+
+
+EJVvdjDGnak,17.14.11,Nagarjuna Funny Comments on Samantha Dress || Naga Chaitany Samantha Akkineni Wedding Reception 2017,Top Telugu TV,24,2017-11-13T07:26:33.000Z,"Nagarjuna Funny Comments on Samantha Dress|""Naga Chaitany Samantha Akkineni Wedding Reception 2017""|""nagarjuna shocking comments on samantha dress""|""nagarjuna funny comments""|""samantha dress""|""samantha wedding reception""|""samantha""|""dress""|""nagarjuna""|""funny""|""naga chaitany""|""naga chaitany samantha""|""samantha wedding""|""#chaisam""|""akkineni reception live""|""grand reception for #chaysam""|""samantha akkineni""|""naga chaitanya""|""akkineni naga chaitanya""|""samantha marriage video""",256199,318,123,35,https://i.ytimg.com/vi/EJVvdjDGnak/default.jpg,FALSE,FALSE,FALSE,"This video about Nagarjuna Funny Comments on Samantha Dress || Naga Chaitany Samantha Akkineni Wedding Reception 2017 and also The Naga Chaitanya - Samantha Ruth Prabhu wedding festivities just won't slow down! After two weddings and a reception, the family of the newlyweds have arranged for another starry reception for the couple, this time in Hyderabad. So there we have Naga Chaitanya looking quite dashing in that navy blue suit. But it is Samantha Ruth Prabhu's outfit of the night that won't allow us to take our eyes off her! Dressed in a gorgeous silvery white gown with a bluish hue, Samantha looked like a beautiful painting come alive, and we have to say Mr Chaitanya is one lucky guy. \nTalking about the reception, it was one star-studded affair as expected. Among the prominent celebs who came to the reception and gave the newlyweds their wishes and blessing, were Megastar Chiranjeevi and his family, including Ram Charan, Allu Arjun and Varun Tej. Baahubali director SS Rajamouli was a guest as well. He had directed Samantha in the fantasy thriller, Ee (Makkhi in Hindi). Then there was Venkatesh, looking quite suave in that suit. Other celebs were present were Vamshi Paidipally, Nandamuri Harikrishna, UV Krishnam Raju, Krishna, Murali Mohan, Nikhil Siddharth, Nani, Rakul Preet and Rashi Khanna. Rana Daggubati, who is also Naga Chaitanya's cousin, was also there to be with the family.\n\n\nSubscribe: https://www.youtube.com/channel/UC8Dj-LDol8r7zGnhn0onF0A\nLike: https://www.facebook.com/TopTeluguTV/\nFollow: https://twitter.com/TopTeluguTV/"
+
+
+
+
+Video ID: 7lgpLbn6RnM
+Title: Naga Babu Fun on Allu Arjun Dance in LOVER ALSO FIGHTER ALSO Song | Naa Peru Surya Pre Release
+Views: 358511
+Likes: 2976
+Dislikes: 204
+Comment Count: 187
+Thumbnail Link: https://i.ytimg.com/vi/7lgpLbn6RnM/default.jpg
+Comments Disabled: False
+Ratings Disabled: False
+Video Error or Removed: False
+Description: Naga Babu Fun on Allu Arjun Dance in LOVER ALSO FIGHTER ALSO Song | Naa Peru Surya Naa Illu India Pre Release Event | Top Telugu TV#NaaPeruSuryaNaaIlluIndia 2018 Telugu movie ft. Allu Arjun and Anu Emmanuel. Music By Vishal - Shekhar. Directed By Vakkantham Vamsi and Produced By Sirisha Sridhar Lagadapati & Bunny Vas under Ramalakshmi Cine Creations. Presented by Naga Babu.Top Telugu TV is the first Channel which Concentrates Only on Youth Life Style, Education, Health Tips, Achievements, Events, Entertainment, Movie Promotions etc..https://www.toptelugutv.comLike: https://www.facebook.com/toptelugutvchannel/Follow: https://twitter.com/TopTeluguTV/Subscribe: https://www.youtube.com/channel/UC8Dj-LDol8r7zGnhn0onF0Ahttps://www.instagram.com/toptelugutv/?hl=en
+
+'''
