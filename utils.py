@@ -230,20 +230,27 @@ def channel_video_all_details(df, channel_title):
     # Filter the DataFrame for videos by the specified channel_title
     channel_df = df[df['channel_title'] == channel_title]
 
-    # Iterate through the filtered DataFrame and print video details
+    video_details_list = []
+
+    # Iterate through the filtered DataFrame and add video details to the list
     for index, row in channel_df.iterrows():
-        print("VideoID:", row['video_id'])
-        print("Title:", row['title'])
-        print("Views:", row['views'])
-        print("Likes:", row['likes'])
-        print("Dislikes:", row['dislikes'])
-        print("CommentCount:", row['comment_count'])
-        print("ThumbnailLink:", row['thumbnail_link'])
-        print("CommentsDisabled:", row['comments_disabled'])
-        print("RatingsDisabled:", row['ratings_disabled'])
-        print("VideoErrororRemoved:", row['video_error_or_removed'])
-        print("Description:", row['description'])
-        print("\n")
+        video_details = {
+            'VideoID': row['video_id'],
+            'Title': row['title'],
+            'Views': row['views'],
+            'Likes': row['likes'],
+            'Dislikes': row['dislikes'],
+            'CommentCount': row['comment_count'],
+            'ThumbnailLink': row['thumbnail_link'],
+            'CommentsDisabled': row['comments_disabled'],
+            'RatingsDisabled': row['ratings_disabled'],
+            'VideoErrororRemoved': row['video_error_or_removed'],
+            'Description': row['description']
+        }
+        video_details_list.append(video_details)
+
+    return video_details_list
+
 
 def channel_summary(df, channel_title):
     # Filter the DataFrame for videos by the specified channel_title

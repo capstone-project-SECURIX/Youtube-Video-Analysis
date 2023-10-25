@@ -14,7 +14,7 @@ import datetime
 import wordcloud
 import json
 
-from utils import Top_5_Categories_with_Most_Videos, Top_10_Liked_Videos, Top_10_Most_Viewed_Videos, correlation_between, channel_Top_10_Liked_Videos, channel_Top_Viewed_Video, channel_Top_Impression_Video, channel_Total_Videos, channel_summary, channel_summary_extended,channel_summary_extended_v2, channel_summary_analysis
+from utils import Top_5_Categories_with_Most_Videos, Top_10_Liked_Videos, Top_10_Most_Viewed_Videos, correlation_between, channel_Top_10_Liked_Videos, channel_Top_Viewed_Video, channel_Top_Impression_Video, channel_Total_Videos, channel_summary, channel_summary_extended,channel_summary_extended_v2, channel_summary_analysis, channel_video_all_details
 
 
 app = Flask(__name__)
@@ -96,6 +96,8 @@ def channel():
             'channel_summary_extended' :channel_summary_extended(df, channel_title), 
             'channel_summary_extended_v2' :channel_summary_extended_v2(df, channel_title), 
             'channel_summary_analysis' :channel_summary_analysis(df, channel_title), 
+
+            'channel_video_all_details' :channel_video_all_details(df, channel_title), 
                     } 
 
         return render_template('channelData.html', results=results, datasets=datasets, channel_title=channel_title)
